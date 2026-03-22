@@ -10,7 +10,7 @@ def create_gazebo_model(model_name, dae_file_path):
     os.makedirs(mesh_dir, exist_ok=True)
     print(f"Directory created: {model_root}")
 
-    # 3. DAE 파일 복사 (선택 사항: 원본을 meshes 폴더로 이동/복사)
+    # 3. DAE 파일 복사 (선택 사항: 원본을 meshes 폴더로 이동/복사)---___________
     # 여기서는 원본 파일 이름을 'model.dae'로 통일하여 관리하기 편하게 합니다.
     dest_dae_path = os.path.join(mesh_dir, "model.dae")
     import shutil

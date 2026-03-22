@@ -5,22 +5,22 @@
       <author>Blender User</author>
       <authoring_tool>Blender 4.2.16 LTS commit date:2025-11-17, commit time:16:05, hash:39502cae951c</authoring_tool>
     </contributor>
-    <created>2026-03-19T17:12:43</created>
-    <modified>2026-03-19T17:12:43</modified>
+    <created>2026-03-20T22:37:53</created>
+    <modified>2026-03-20T22:37:53</modified>
     <unit name="meter" meter="1"/>
     <up_axis>Z_UP</up_axis>
   </asset>
   <library_effects>
-    <effect id="Wooden_Boxes-effect">
+    <effect id="Wooden_Pallet-effect">
       <profile_COMMON>
-        <newparam sid="Wooden_Boxes_Base_color_jpg-surface">
+        <newparam sid="Wooden_Pallet-surface">
           <surface type="2D">
-            <init_from>Wooden_Boxes_Base_color_jpg</init_from>
+            <init_from>Wooden_Pallet_Base_color</init_from>
           </surface>
         </newparam>
-        <newparam sid="Wooden_Boxes_Base_color_jpg-sampler">
+        <newparam sid="Wooden_Pallet-sampler">
           <sampler2D>
-            <source>Wooden_Boxes_Base_color_jpg-surface</source>
+            <source>Wooden_Pallet-surface</source>
           </sampler2D>
         </newparam>
         <technique sid="common">
@@ -29,7 +29,7 @@
               <color sid="emission">0 0 0 1</color>
             </emission>
             <diffuse>
-              <texture texture="Wooden_Boxes_Base_color_jpg-sampler" texcoord="UVW"/>
+              <texture texture="Wooden_Pallet-sampler" texcoord="UVW"/>
             </diffuse>
             <index_of_refraction>
               <float sid="ior">1.45</float>
@@ -40,13 +40,13 @@
     </effect>
   </library_effects>
   <library_images>
-    <image id="Wooden_Boxes_Base_color_jpg" name="Wooden_Boxes_Base_color_jpg">
-      <init_from>Wooden_Boxes_Base_color.jpg</init_from>
+    <image id="Wooden_Pallet_Base_color" name="Wooden_Pallet_Base_color">
+      <init_from>Wooden_Pallet_Base_color.jpg</init_from>
     </image>
   </library_images>
   <library_materials>
-    <material id="Wooden_Boxes-material" name="Wooden_Boxes">
-      <instance_effect url="#Wooden_Boxes-effect"/>
+    <material id="Wooden_Pallet-material" name="Wooden_Pallet">
+      <instance_effect url="#Wooden_Pallet-effect"/>
     </material>
   </library_materials>
   <library_geometries>
@@ -84,7 +84,7 @@
         <vertices id="Pallet-mesh-vertices">
           <input semantic="POSITION" source="#Pallet-mesh-positions"/>
         </vertices>
-        <triangles material="Wooden_Boxes-material" count="300">
+        <triangles material="Wooden_Pallet-material" count="300">
           <input semantic="VERTEX" source="#Pallet-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#Pallet-mesh-normals" offset="1"/>
           <input semantic="TEXCOORD" source="#Pallet-mesh-map-0" offset="2" set="0"/>
@@ -100,7 +100,7 @@
         <instance_geometry url="#Pallet-mesh" name="Pallet">
           <bind_material>
             <technique_common>
-              <instance_material symbol="Wooden_Boxes-material" target="#Wooden_Boxes-material">
+              <instance_material symbol="Wooden_Pallet-material" target="#Wooden_Pallet-material">
                 <bind_vertex_input semantic="UVW" input_semantic="TEXCOORD" input_set="0"/>
               </instance_material>
             </technique_common>
