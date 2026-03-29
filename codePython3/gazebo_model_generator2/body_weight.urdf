@@ -1,0 +1,25 @@
+<robot name="body_weight" version="1.0">
+  <link name="base_link">
+    <collision name="body_wegiht_collision">
+      <origin rpy="3.14159 -1.57080 0.00000" xyz="-0.00006 -0.00001 -0.00024"/>
+      <geometry>
+        <box size="0.02718 0.59563 0.58630"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <inertia ixx="0.00296" ixy="-0.00000" ixz="0.00000" iyy="0.00287" iyz="0.00000" izz="0.00582"/>
+      <origin rpy="0.00000 0.00000 0.00000" xyz="-0.00006 -0.00001 -0.00024"/>
+      <mass value="0.10000"/>
+    </inertial>
+    <visual name="body_wegiht">
+      <material name="Material"/>
+      <origin rpy="3.14159 -1.57080 0.00000" xyz="0.00000 0.00000 0.00000"/>
+      <geometry>
+        <mesh filename="package://ros_package/meshes/dae/Cube.006.dae" scale="1 1 1"/>
+      </geometry>
+    </visual>
+  </link>
+  <material name="Material">
+    <color rgba="1.00000 1.00000 1.00000 1.00000"/>
+  </material>
+</robot>
