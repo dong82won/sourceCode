@@ -17,12 +17,12 @@ def parse_urdf_values(urdf_path):
         def get_geometry_data(geom_element):
             """geometry 태그 내부의 형상 정보를 분석하여 반환합니다."""
             if geom_element is None: return None
-            
+
             # 1. Box
             box = geom_element.find('box')
             if box is not None:
                 return {"type": "box", "size": box.get('size', '1 1 1')}
-            
+
             # 2. Cylinder
             cylinder = geom_element.find('cylinder')
             if cylinder is not None:
@@ -31,17 +31,17 @@ def parse_urdf_values(urdf_path):
                     "radius": cylinder.get('radius', '0.5'), 
                     "length": cylinder.get('length', '1.0')
                 }
-            
+
             # 3. Sphere
             sphere = geom_element.find('sphere')
             if sphere is not None:
                 return {"type": "sphere", "radius": sphere.get('radius', '0.5')}
-            
+
             # 4. Mesh
             mesh = geom_element.find('mesh')
             if mesh is not None:
                 return {"type": "mesh", "filename": mesh.get('filename', ''), "scale": mesh.get('scale', '1 1 1')}
-            
+
             return None
 
         # 기본 데이터 구조

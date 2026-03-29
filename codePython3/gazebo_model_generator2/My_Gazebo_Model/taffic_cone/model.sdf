@@ -1,0 +1,49 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <model name="taffic_cone">
+    <link name="base_link">
+      <allow_auto_disable>1</allow_auto_disable>
+      <laser_retro>150</laser_retro>
+
+      <visual name="visual">
+        <pose>0.00000 0.00000 0.00000 0.00000 0.00000 0.00000</pose>
+        <cast_shadows>1</cast_shadows>
+        <geometry><mesh><uri>model://taffic_cone/meshes/Cylinder.dae</uri><scale>1 1 1</scale></mesh></geometry>
+      </visual>
+
+      <inertial>
+        <pose>0.00000 0.00000 0.10732 0.00000 0.00000 0.00000</pose>
+        <mass>0.10000</mass>
+        <inertia>
+          <ixx>0.00583</ixx>
+          <ixy>0.00000</ixy>
+          <ixz>0.00000</ixz>
+          <iyy>0.00583</iyy>
+          <iyz>0.00000</iyz>
+          <izz>0.00224</izz>
+        </inertia>
+      </inertial>
+
+      <collision name="collision">
+        <pose>0.00000 0.00000 0.10732 0.00000 0.00000 0.00000</pose>
+        <geometry><cylinder><radius>0.21171</radius><length>0.75176</length></cylinder></geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu>1.0</mu>
+              <mu2>1.0</mu2>
+            </ode>
+          </friction>
+          <contact>
+            <ode>
+              <kp>100000.0</kp>
+              <kd>100.0</kd>
+              <min_depth>0.001</min_depth>
+              <max_vel>0.1</max_vel>
+            </ode>
+          </contact>
+        </surface>
+      </collision>
+    </link>
+  </model>
+</sdf>

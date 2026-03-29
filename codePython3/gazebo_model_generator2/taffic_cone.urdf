@@ -1,0 +1,25 @@
+<robot name="taffic_cone" version="1.0">
+  <link name="base_link">
+    <collision name="traffic_cone_collision">
+      <origin rpy="0.00000 0.00000 0.00000" xyz="0.00000 -0.00000 0.10732"/>
+      <geometry>
+        <cylinder radius="0.21171" length="0.75176"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <inertia ixx="0.00583" ixy="0.00000" ixz="0.00000" iyy="0.00583" iyz="0.00000" izz="0.00224"/>
+      <origin rpy="0.00000 0.00000 0.00000" xyz="0.00000 -0.00000 0.10732"/>
+      <mass value="0.10000"/>
+    </inertial>
+    <visual name="traffic_cone">
+      <material name="Orange"/>
+      <origin rpy="0.00000 0.00000 0.00000" xyz="0.00000 0.00000 -0.00000"/>
+      <geometry>
+        <mesh filename="package://robot_name_model/meshes/dae/Cylinder.dae" scale="1 1 1"/>
+      </geometry>
+    </visual>
+  </link>
+  <material name="Orange">
+    <color rgba="1.00000 0.05490 0.00000 1.00000"/>
+  </material>
+</robot>
