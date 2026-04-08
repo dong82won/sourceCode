@@ -1,0 +1,36 @@
+material Material-material
+{
+  technique
+  {
+    pass
+    {
+      ambient 1 1 1 1
+      diffuse 1 1 1 1
+      specular 0.5 0.5 0.5 1.0 12.5
+    }
+  }
+}
+
+material Blue_001-material
+{
+  technique
+  {
+    pass
+    {
+      texture_unit { texture 68kg.png }
+    }
+  }
+}
+
+material Silver-material
+{
+  technique
+  {
+    pass
+    {
+      ambient 0.9098223 0.9098223 0.9098223 1
+      diffuse 0.9098223 0.9098223 0.9098223 1
+      specular 0.5 0.5 0.5 1.0 12.5
+    }
+  }
+}
