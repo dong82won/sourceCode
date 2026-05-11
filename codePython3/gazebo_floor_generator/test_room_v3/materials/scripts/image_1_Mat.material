@@ -1,0 +1,20 @@
+material image_1_Mat
+{
+  technique
+  {
+    pass
+    {
+      ambient 1 1 1 1.000000
+      diffuse 1 1 1 1.000000
+      specular 0.03 0.03 0.03 1.000000
+
+      texture_unit
+      {
+        # 이미지 파일은 첨부하고 이름 변경한다!!!
+        # 회전 ➔ 자르기(여백 제거) ➔ 해상도 변경(Scale)"
+        # 레이어에 캔버스 맞추기(Fit Canvas to Layers)]
+        texture test.png
+      }
+    }
+  }
+}
