@@ -66,7 +66,7 @@ class FloorProjectMixin:
         except Exception as e:
             messagebox.showerror("오류", f"SDF 로딩 중 오류: {str(e)}")
 
-    def update_sdf_text(self):
+    # def update_sdf_text(self):
         self.text_output.delete("1.0", tk.END)
         code = ""
         folder_name = os.path.basename(self.target_model_dir) if self.target_model_dir else "model"
@@ -103,6 +103,84 @@ class FloorProjectMixin:
             code += f"      </visual>\n"
             code += f"    </link>\n\n"
         self.text_output.insert(tk.END, code)
+    def update_sdf_text(self):
+        self.text_output.delete("1.0", tk.END)
+        code = ""
+        folder_name = os.path.basename(self.target_model_dir) if self.target_model_dir else "model"
+
+        floor_idx, img_idx = 1, 1
+        for f in self.confirmed_floors:
+            # 원본 로직: 영역의 중심점(gx, gy)과 크기(gw, gh) 계산
+            gx, gy, gw, gh = (f[0]+f[2])/2, (f[1]+f[3])/2, f[2]-f[0], f[3]-f[1]
+            mat_choice = f[5]
+
+            # 물리 엔진을 위한 질량 및 관성 모멘트(Box) 자동 계산 (가정: 면적 1m²당 약 1.5kg)
+            mass = max(1.0, round(gw * gh * 1.5, 2))
+            thickness = 0.01
+            # 직육면체 관성 모멘트 공식 적용 (Ixx, Iyy, Izz)
+            ixx = round((1.0 / 12.0) * mass * (gh**2 + thickness**2), 4)
+            iyy = round((1.0 / 12.0) * mass * (gw**2 + thickness**2), 4)
+            izz = round((1.0 / 12.0) * mass * (gw**2 + gh**2), 4)
+
+            if mat_choice == "Custom Image":
+                base_name = f"image_{img_idx}"
+                mat_tag = f"""<uri>model://{folder_name}/materials/scripts</uri>
+            <uri>model://{folder_name}/materials/textures/</uri>
+            <name>{base_name}_Mat</name>"""
+                mu_val = 1.0  # 이미지의 마찰 계수 (필요에 따라 조정 가능)
+                img_idx += 1
+            else:
+                base_name = f"Floor_{floor_idx}"
+                mat_tag = f"""<uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>{mat_choice}</name>"""
+                mu_val = 1.0  # 기본 바닥재 마찰 계수
+                floor_idx += 1
+
+            code += f"\n"
+            code += f"    <link name='{base_name}'>\n"
+            code += f"      <pose>{gx:.3f} {gy:.3f} 0.001 0 0 0</pose>\n"
+
+            # --- [추가됨] 관성(Inertial) 속성 ---
+            code += f"      <inertial>\n"
+            code += f"        <mass>{mass}</mass>\n"
+            code += f"        <inertia>\n"
+            code += f"          <ixx>{ixx}</ixx> <ixy>0.0</ixy> <ixz>0.0</ixz>\n"
+            code += f"          <iyy>{iyy}</iyy> <iyz>0.0</iyz>\n"
+            code += f"          <izz>{izz}</izz>\n"
+            code += f"        </inertia>\n"
+            code += f"      </inertial>\n"
+
+            code += f"      <collision name='{base_name}_Col'>\n"
+            code += f"        <geometry><box><size>{gw:.3f} {gh:.3f} {thickness}</size></box></geometry>\n"
+
+            # --- [추가됨] 마찰력 및 접촉(Surface) 속성 ---
+            code += f"        <surface>\n"
+            code += f"          <friction>\n"
+            code += f"            <ode>\n"
+            code += f"              <mu>{mu_val}</mu>\n"
+            code += f"              <mu2>{mu_val}</mu2>\n"
+            code += f"            </ode>\n"
+            code += f"          </friction>\n"
+            code += f"          <contact>\n"
+            code += f"            <ode>\n"
+            code += f"              <kp>10000000.0</kp>\n"
+            code += f"              <kd>1.0</kd>\n"
+            code += f"            </ode>\n"
+            code += f"          </contact>\n"
+            code += f"        </surface>\n"
+            code += f"      </collision>\n"
+
+            code += f"      <visual name='{base_name}_Vis'>\n"
+            code += f"        <geometry><box><size>{gw:.3f} {gh:.3f} {thickness}</size></box></geometry>\n"
+            code += f"        <material>\n"
+            code += f"          <script>\n            {mat_tag}\n          </script>\n"
+            code += f"        </material>\n"
+            code += f"      </visual>\n"
+            code += f"    </link>\n"
+
+        self.text_output.insert(tk.END, code)
+
+
 
     def export_project(self):
         if not self.target_model_dir:

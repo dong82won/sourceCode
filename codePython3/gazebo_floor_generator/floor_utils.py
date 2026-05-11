@@ -7,7 +7,7 @@ def parse_wall_data(link):
         p = list(map(float, link.find('pose').text.split()))
         s = list(map(float, link.find('.//box/size').text.split()))
         if s[2] < 0.5: return None
-        
+
         yaw = abs(math.degrees(p[5])) % 180
         w, h = (s[1], s[0]) if 80 < yaw < 100 else (s[0], s[1])
         return {'px': p[0], 'py': p[1], 'w': w, 'h': h}

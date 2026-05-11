@@ -68,20 +68,20 @@ class FloorEventsMixin:
         sx2, sy2 = self.gz_to_screen(cx, cy)
         # [해결] rect_id가 확실히 존재할 때만 캔버스 좌표를 업데이트하도록 방어 로직 추가
         if self.rect_id is not None:
-          self.canvas.coords(self.rect_id, sx1, sy1, sx2, sy2)
+            self.canvas.coords(self.rect_id, sx1, sy1, sx2, sy2)
 
     def on_mouse_up(self, event):
         # 1. 여기서도 확실하게 None 검사
-        if self.start_x is None or self.start_y is None: 
+        if self.start_x is None or self.start_y is None:
             return
-            
+
         # 2. IDE 경고를 없애기 위해 지역 변수로 안전하게 할당
         sx, sy = float(self.start_x), float(self.start_y)
-        
+
         gx, gy = self.screen_to_gz(event.x, event.y)
         tx, ty = self.get_snap_targets()
         end_x, end_y = float(self.snap_value(gx, tx)), float(self.snap_value(gy, ty))
-        
+
         # 3. self.start_x 대신 sx, sy 사용
         if abs(end_x - sx) < 0.1 or abs(end_y - sy) < 0.1:
             if self.rect_id: self.canvas.delete(self.rect_id)
@@ -90,7 +90,7 @@ class FloorEventsMixin:
 
         # 4. min, max에도 sx, sy 사용 (이제 에러가 사라집니다!)
         new_rect = (min(sx, end_x), min(sy, end_y), max(sx, end_x), max(sy, end_y))
-        
+
         process_list = [new_rect]
         for old in self.confirmed_floors:
             next_list = []
@@ -104,12 +104,12 @@ class FloorEventsMixin:
                 color = self.color_palette[self.color_index % len(self.color_palette)]
                 self.confirmed_floors.append((r[0], r[1], r[2], r[3], color, self.material_var.get()))
                 added = True
-        
+
         if added: self.color_index += 1
-        
+
         if self.rect_id: self.canvas.delete(self.rect_id)
         self.start_x = self.start_y = None
-        
+
         self.draw_workspace()
         self.update_sdf_text()# type: ignore
 
@@ -161,7 +161,7 @@ class FloorEventsMixin:
 
             # self.canvas.create_text((s1[0]+s2[0])/2, (s1[1]+s2[1])/2, ㅏtext=label_text, font=("Arial", 10, "bold"))
             self.canvas.create_text((s1[0]+s2[0])/2, (s1[1]+s2[1])/2, text=label_text, font=("Arial", 10, "bold"), justify="center")
-            
+
 
         for w in self.walls_data:
             s = self.gz_to_screen(w['px'], w['py'])
