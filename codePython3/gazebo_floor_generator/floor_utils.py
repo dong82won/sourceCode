@@ -18,7 +18,7 @@ def parse_wall_data(link):
     """SDF link 엘리먼트에서 벽 데이터를 추출하고 반시계 방향으로 90도 회전합니다."""
     try:
         p = list(map(float, link.find('pose').text.split()))
-        s = list(map(float, link.find('.//box/size').text.split()))        
+        s = list(map(float, link.find('.//box/size').text.split()))
         # 높이가 0.5 미만인 것은 벽이 아닌 바닥이나 기타 객체로 간주하고 무시
         if s[2] < 0.5: return None
 
@@ -26,15 +26,16 @@ def parse_wall_data(link):
         yaw = abs(math.degrees(p[5])) % 180
         w, h = (s[1], s[0]) if 80 < yaw < 100 else (s[0], s[1])
 
-        # 💡 [추가] 반시계 방향(CCW) 90도 회전 적용 로직
-        # 90도 회전 시 좌표 변환: x' = -y, y' = x
-        # 90도 회전 시 크기 변환: 가로와 세로가 바뀜
-        rotated_px = -p[1]
-        rotated_py = p[0]
-        rotated_w = h
-        rotated_h = w
+        # # 💡 [추가] 반시계 방향(CCW) 90도 회전 적용 로직
+        # rotated_px = -p[1]
+        # rotated_py = p[0]
+        # rotated_w = h
+        # rotated_h = w
+        # return {'px': rotated_px, 'py': rotated_py, 'w': rotated_w, 'h': rotated_h}
 
-        return {'px': rotated_px, 'py': rotated_py, 'w': rotated_w, 'h': rotated_h}
+        # 회전 없이 원본 좌표 그대로 사용
+        return {'px': p[0], 'py': p[1], 'w': w, 'h': h}
+
     except Exception as e:
         # 에러 발생 시 None 반환하여 해당 링크 건너뜀
         return None

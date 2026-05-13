@@ -73,51 +73,25 @@ class FloorProjectMixin:
 
         floor_idx, img_idx = 1, 1
         for f in self.confirmed_floors:
-            # 원본 로직으로 복구: 영역의 중심점(gx, gy)과 크기(gw, gh) 계산
-            gx, gy, gw, gh = (f[0]+f[2])/2, (f[1]+f[3])/2, f[2]-f[0], f[3]-f[1]
-            mat_choice = f[5]
+            # 1. 캔버스 상의 중심점 및 크기 계산 (반시계 90도 회전되어 있는 상태)
+            canvas_gx = (f[0]+f[2])/2
+            canvas_gy = (f[1]+f[3])/2
+            gw = f[2]-f[0]
+            gh = f[3]-f[1]
 
-            if mat_choice == "Custom Image":
-                base_name = f"image_{img_idx}"
-                mat_tag = f"""<uri>model://{folder_name}/materials/scripts</uri>
-            <uri>model://{folder_name}/materials/textures/</uri>
-            <name>{base_name}_Mat</name>"""
-                img_idx += 1
-            else:
-                base_name = f"Floor_{floor_idx}"
-                mat_tag = f"""<uri>file://media/materials/scripts/gazebo.material</uri>
-            <name>{mat_choice}</name>"""
-                floor_idx += 1
+            # 2. 💡 [핵심 수정] 캔버스 좌표를 다시 가제보 원본 좌표로 역변환 (시계방향 90도 회전)
+            # 벽 파싱 시 X' = -Y, Y' = X 로 변환했으므로, 다시 되돌리려면 X = Y', Y = -X' 가 됩니다.
+            gx = canvas_gy
+            gy = -canvas_gx
 
-            code += f"\n"
-            code += f"    <link name='{base_name}'>\n"
-            code += f"      <pose>{gx:.3f} {gy:.3f} 0.001 0 0 0</pose>\n"
-            code += f"      <collision name='{base_name}_Col'>\n"
-            code += f"        <geometry><box><size>{gw:.3f} {gh:.3f} 0.01</size></box></geometry>\n"
-            code += f"      </collision>\n"
-            code += f"      <visual name='{base_name}_Vis'>\n"
-            code += f"        <geometry><box><size>{gw:.3f} {gh:.3f} 0.01</size></box></geometry>\n"
-            code += f"        <material>\n"
-            code += f"          <script>\n            {mat_tag}\n          </script>\n"
-            code += f"        </material>\n"
-            code += f"      </visual>\n"
-            code += f"    </link>\n\n"
-        self.text_output.insert(tk.END, code)
-    def update_sdf_text(self):
-        self.text_output.delete("1.0", tk.END)
-        code = ""
-        folder_name = os.path.basename(self.target_model_dir) if self.target_model_dir else "model"
-
-        floor_idx, img_idx = 1, 1
-        for f in self.confirmed_floors:
-            # 원본 로직: 영역의 중심점(gx, gy)과 크기(gw, gh) 계산
-            gx, gy, gw, gh = (f[0]+f[2])/2, (f[1]+f[3])/2, f[2]-f[0], f[3]-f[1]
             mat_choice = f[5]
 
             # 물리 엔진을 위한 질량 및 관성 모멘트(Box) 자동 계산 (가정: 면적 1m²당 약 1.5kg)
             mass = max(1.0, round(gw * gh * 1.5, 2))
             thickness = 0.01
+
             # 직육면체 관성 모멘트 공식 적용 (Ixx, Iyy, Izz)
+            # 로컬 박스 기준 x축 길이가 gw, y축 길이가 gh 이므로 Ixx에는 gh가 곱해집니다.
             ixx = round((1.0 / 12.0) * mass * (gh**2 + thickness**2), 4)
             iyy = round((1.0 / 12.0) * mass * (gw**2 + thickness**2), 4)
             izz = round((1.0 / 12.0) * mass * (gw**2 + gh**2), 4)
@@ -127,7 +101,7 @@ class FloorProjectMixin:
                 mat_tag = f"""<uri>model://{folder_name}/materials/scripts</uri>
             <uri>model://{folder_name}/materials/textures/</uri>
             <name>{base_name}_Mat</name>"""
-                mu_val = 1.0  # 이미지의 마찰 계수 (필요에 따라 조정 가능)
+                mu_val = 1.0  # 이미지의 마찰 계수
                 img_idx += 1
             else:
                 base_name = f"Floor_{floor_idx}"
@@ -138,9 +112,10 @@ class FloorProjectMixin:
 
             code += f"\n"
             code += f"    <link name='{base_name}'>\n"
-            code += f"      <pose>{gx:.3f} {gy:.3f} 0.001 0 0 0</pose>\n"
+            # 💡 [수정] 역변환된 원래 좌표(gx, gy)에 배치하고, 캔버스의 모습대로 맞추기 위해 -90도(-1.5708) 회전시킵니다.
+            code += f"      <pose>{gx:.3f} {gy:.3f} 0.001 0 0 -1.5708</pose>\n"
 
-            # --- [추가됨] 관성(Inertial) 속성 ---
+            # 관성(Inertial) 속성
             code += f"      <inertial>\n"
             code += f"        <mass>{mass}</mass>\n"
             code += f"        <inertia>\n"
@@ -151,9 +126,10 @@ class FloorProjectMixin:
             code += f"      </inertial>\n"
 
             code += f"      <collision name='{base_name}_Col'>\n"
+            # 💡 [수정] pose에서 -90도 회전을 주었으므로, 박스의 가로세로 크기(gw, gh)는 스왑하지 않고 원래 캔버스 비율대로 넣습니다.
             code += f"        <geometry><box><size>{gw:.3f} {gh:.3f} {thickness}</size></box></geometry>\n"
 
-            # --- [추가됨] 마찰력 및 접촉(Surface) 속성 ---
+            # 마찰력 및 접촉(Surface) 속성
             code += f"        <surface>\n"
             code += f"          <friction>\n"
             code += f"            <ode>\n"
@@ -171,6 +147,7 @@ class FloorProjectMixin:
             code += f"      </collision>\n"
 
             code += f"      <visual name='{base_name}_Vis'>\n"
+            # 💡 [수정] visual 역시 gw, gh 순서 유지
             code += f"        <geometry><box><size>{gw:.3f} {gh:.3f} {thickness}</size></box></geometry>\n"
             code += f"        <material>\n"
             code += f"          <script>\n            {mat_tag}\n          </script>\n"
@@ -180,7 +157,69 @@ class FloorProjectMixin:
 
         self.text_output.insert(tk.END, code)
 
+    def update_sdf_text(self):
+        self.text_output.delete("1.0", tk.END)
+        code = ""
+        folder_name = os.path.basename(self.target_model_dir) if self.target_model_dir else "model"
 
+        floor_idx, img_idx = 1, 1
+        for f in self.confirmed_floors:
+            # 1. 캔버스 상의 좌표가 곧 가제보 좌표 (회전 없음)
+            gx = (f[0] + f[2]) / 2
+            gy = (f[1] + f[3]) / 2
+            gw = f[2] - f[0]
+            gh = f[3] - f[1]
+
+            mat_choice = f[5]
+            mass = max(1.0, round(gw * gh * 1.5, 2))
+            thickness = 0.01
+
+            # 관성 모멘트 계산 (기존 동일)
+            ixx = round((1.0 / 12.0) * mass * (gh**2 + thickness**2), 4)
+            iyy = round((1.0 / 12.0) * mass * (gw**2 + thickness**2), 4)
+            izz = round((1.0 / 12.0) * mass * (gw**2 + gh**2), 4)
+
+            if mat_choice == "Custom Image":
+                base_name = f"image_{img_idx}"
+                mat_tag = f"""<uri>model://{folder_name}/materials/scripts</uri>
+                <uri>model://{folder_name}/materials/textures/</uri>
+                <name>{base_name}_Mat</name>"""
+                mu_val = 1.0
+                img_idx += 1
+            else:
+                base_name = f"Floor_{floor_idx}"
+                mat_tag = f"""<uri>file://media/materials/scripts/gazebo.material</uri>
+                <name>{mat_choice}</name>"""
+                mu_val = 1.0
+                floor_idx += 1
+
+            code += f"\n    <link name='{base_name}'>\n"
+            # 💡 [중요 수정] 회전(-1.5708)을 없애고 0으로 설정
+            code += f"      <pose>{gx:.3f} {gy:.3f} 0.001 0 0 0</pose>\n"
+
+            code += f"      <inertial>\n"
+            code += f"        <mass>{mass}</mass>\n"
+            code += f"        <inertia>\n"
+            code += f"          <ixx>{ixx}</ixx> <ixy>0.0</ixy> <ixz>0.0</ixz>\n"
+            code += f"          <iyy>{iyy}</iyy> <iyz>0.0</iyz>\n"
+            code += f"          <izz>{izz}</izz>\n"
+            code += f"        </inertia>\n"
+            code += f"      </inertial>\n"
+
+            # 가로(gw), 세로(gh)를 캔버스에 보이는 그대로 할당
+            code += f"      <collision name='{base_name}_Col'>\n"
+            code += f"        <geometry><box><size>{gw:.3f} {gh:.3f} {thickness}</size></box></geometry>\n"
+            code += f"        <surface>\n          <friction><ode><mu>{mu_val}</mu><mu2>{mu_val}</mu2></ode></friction>\n"
+            code += f"          <contact><ode><kp>10000000.0</kp><kd>1.0</kd></ode></contact>\n"
+            code += f"        </surface>\n      </collision>\n"
+
+            code += f"      <visual name='{base_name}_Vis'>\n"
+            code += f"        <geometry><box><size>{gw:.3f} {gh:.3f} {thickness}</size></box></geometry>\n"
+            code += f"        <material><script>{mat_tag}</script></material>\n"
+            code += f"      </visual>\n    </link>\n"
+
+        self.text_output.insert(tk.END, code)
+    
 
     def export_project(self):
         if not self.target_model_dir:
@@ -190,6 +229,18 @@ class FloorProjectMixin:
         scripts_path = os.path.join(self.target_model_dir, "materials", "scripts")
         os.makedirs(scripts_path, exist_ok=True)
         os.makedirs(os.path.join(self.target_model_dir, "materials", "textures"), exist_ok=True)
+
+        # -----------------------------------------------------------------
+        # ✨ [여기에 코드 추가] Custom Image일 경우 .material 파일 생성 로직
+        # -----------------------------------------------------------------
+        img_idx = 1
+        for f in self.confirmed_floors:
+            if f[5] == "Custom Image":
+                mat_name = f"image_{img_idx}_Mat"
+                # floor_utils.py의 함수 호출 (현재 세 번째 인자 base_material_name은 함수 내에서 미사용이므로 임의의 값 전달)
+                floor_utils.create_material_script(scripts_path, mat_name, "test.png")
+                img_idx += 1
+        # -----------------------------------------------------------------
 
         if PILLOW_AVAILABLE and Image and ImageDraw:
             # 💡 PNG 저장용 별도 좌표 변환 (Pan 무시하고 중앙 정렬)
@@ -220,9 +271,16 @@ class FloorProjectMixin:
             for w in self.walls_data:
                 s = png_gz_to_screen(w['px'], w['py'])
                 sw, sh = w['w'] * self.scale, w['h'] * self.scale
-                draw.rectangle([s[0]-sw/2, s[1]-sh/2, s[0]+sw/2, s[1]+sh/2], fill="#777777", outline="black")
+                draw.rectangle([s[0]-sw/2, s[1]-sh/2, s[0]+sw/2, s[1]+sh/2], fill="#777777", outline="black") 
 
-            img.save(os.path.join(self.target_model_dir, "test.png"))
+            # img.save(os.path.join(self.target_model_dir, "test.png"))
+
+            # --- [수정 구간 시작] ---
+            # 이미지를 반시계 방향으로 90도 회전 (Image.ROTATE_90)
+            rotated_img = img.rotate(90, expand=True)
+            # 회전된 이미지를 저장
+            rotated_img.save(os.path.join(self.target_model_dir, "test.png"))
+            # --- [수정 구간 끝] ---
 
         # model.sdf 업데이트 (model name 자동 변경 포함)
         folder_name = os.path.basename(self.target_model_dir)
