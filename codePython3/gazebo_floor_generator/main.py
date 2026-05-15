@@ -6,7 +6,7 @@ from floor_project import FloorProjectMixin
 class FloorGeneratorApp(FloorEventsMixin, FloorProjectMixin):
     def __init__(self, root):
         self.root = root
-        self.root.title("Gazebo SDF Floor Master v1.2 (Split ver)")
+        self.root.title("Gazebo SDF Floor Master v1.4 - by D.W Lee")
         self.root.geometry("900x980")
 
         # 변수 초기화
@@ -40,7 +40,7 @@ class FloorGeneratorApp(FloorEventsMixin, FloorProjectMixin):
         right_btn_frame = tk.Frame(btn_frame)
         right_btn_frame.pack(side=tk.RIGHT)
         tk.Label(right_btn_frame, text="바닥 재질:").pack(side=tk.LEFT, padx=(0, 2))
-        self.material_var = tk.StringVar(value="Gazebo/Wood")
+        self.material_var = tk.StringVar(value="Custom Image")
 
         materials = ["Gazebo/Wood", "Gazebo/CeilingTiled", "Gazebo/Grey", "Gazebo/Bricks", "Gazebo/Grass", "Gazebo/Asphalt", "Custom Image"]
         self.mat_combo = ttk.Combobox(right_btn_frame, textvariable=self.material_var, values=materials, state="readonly", width=18)

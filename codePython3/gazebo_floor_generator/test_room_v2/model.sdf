@@ -1,9 +1,9 @@
-<?xml version='1.0'?>
-<sdf version='1.7'>
-  <model name='test_room_v3'>
+<?xml version='1.0' encoding='utf-8'?>
+<sdf version="1.7">
+  <model name="test_room_v2">
     <pose>0.429 0.941 0 0 -0 0</pose>
-    <link name='Wall_0'>
-      <collision name='Wall_0_Collision'>
+    <link name="Wall_0">
+      <collision name="Wall_0_Collision">
         <geometry>
           <box>
             <size>10 0.15 1.5</size>
@@ -11,7 +11,7 @@
         </geometry>
         <pose>0 0 0.75 0 -0 0</pose>
       </collision>
-      <visual name='Wall_0_Visual'>
+      <visual name="Wall_0_Visual">
         <pose>0 0 0.75 0 -0 0</pose>
         <geometry>
           <box>
@@ -31,8 +31,8 @@
       </visual>
       <pose>-4.925 0 0 0 -0 1.5708</pose>
     </link>
-    <link name='Wall_12'>
-      <collision name='Wall_12_Collision'>
+    <link name="Wall_12">
+      <collision name="Wall_12_Collision">
         <geometry>
           <box>
             <size>4 0.15 1.5</size>
@@ -40,7 +40,7 @@
         </geometry>
         <pose>0 0 0.75 0 -0 0</pose>
       </collision>
-      <visual name='Wall_12_Visual'>
+      <visual name="Wall_12_Visual">
         <pose>0 0 0.75 0 -0 0</pose>
         <geometry>
           <box>
@@ -60,8 +60,8 @@
       </visual>
       <pose>-3 4.925 0 0 -0 0</pose>
     </link>
-    <link name='Wall_14'>
-      <collision name='Wall_14_Collision'>
+    <link name="Wall_14">
+      <collision name="Wall_14_Collision">
         <geometry>
           <box>
             <size>6 0.15 1.5</size>
@@ -69,7 +69,7 @@
         </geometry>
         <pose>0 0 0.75 0 -0 0</pose>
       </collision>
-      <visual name='Wall_14_Visual'>
+      <visual name="Wall_14_Visual">
         <pose>0 0 0.75 0 -0 0</pose>
         <geometry>
           <box>
@@ -89,8 +89,8 @@
       </visual>
       <pose>-1.075 2 0 0 -0 -1.5708</pose>
     </link>
-    <link name='Wall_16'>
-      <collision name='Wall_16_Collision'>
+    <link name="Wall_16">
+      <collision name="Wall_16_Collision">
         <geometry>
           <box>
             <size>6.15 0.15 1.5</size>
@@ -98,7 +98,7 @@
         </geometry>
         <pose>0 0 0.75 0 -0 0</pose>
       </collision>
-      <visual name='Wall_16_Visual'>
+      <visual name="Wall_16_Visual">
         <pose>0 0 0.75 0 -0 0</pose>
         <geometry>
           <box>
@@ -118,8 +118,8 @@
       </visual>
       <pose>1.925 4.925 0 0 -0 3.14159</pose>
     </link>
-    <link name='Wall_18'>
-      <collision name='Wall_18_Collision'>
+    <link name="Wall_18">
+      <collision name="Wall_18_Collision">
         <geometry>
           <box>
             <size>2.5 0.15 1.5</size>
@@ -127,7 +127,7 @@
         </geometry>
         <pose>0 0 0.75 0 -0 0</pose>
       </collision>
-      <visual name='Wall_18_Visual'>
+      <visual name="Wall_18_Visual">
         <pose>0 0 0.75 0 -0 0</pose>
         <geometry>
           <box>
@@ -147,8 +147,8 @@
       </visual>
       <pose>0.1 -0.925 0 0 -0 0</pose>
     </link>
-    <link name='Wall_4'>
-      <collision name='Wall_4_Collision'>
+    <link name="Wall_4">
+      <collision name="Wall_4_Collision">
         <geometry>
           <box>
             <size>10 0.15 1.5</size>
@@ -156,7 +156,7 @@
         </geometry>
         <pose>0 0 0.75 0 -0 0</pose>
       </collision>
-      <visual name='Wall_4_Visual'>
+      <visual name="Wall_4_Visual">
         <pose>0 0 0.75 0 -0 0</pose>
         <geometry>
           <box>
@@ -176,8 +176,8 @@
       </visual>
       <pose>4.925 0 0 0 -0 -1.5708</pose>
     </link>
-    <link name='Wall_6'>
-      <collision name='Wall_6_Collision'>
+    <link name="Wall_6">
+      <collision name="Wall_6_Collision">
         <geometry>
           <box>
             <size>10 0.15 1.5</size>
@@ -185,7 +185,7 @@
         </geometry>
         <pose>0 0 0.75 0 -0 0</pose>
       </collision>
-      <visual name='Wall_6_Visual'>
+      <visual name="Wall_6_Visual">
         <pose>0 0 0.75 0 -0 0</pose>
         <geometry>
           <box>
@@ -204,84 +204,154 @@
         </meta>
       </visual>
       <pose>-0 -4.925 0 0 -0 0</pose>
-    </link>  
+    </link>
     <static>1</static>
-
-
-    <link name='image_1'>
-      <pose>1.925 1.925 0.001 0 0 0</pose>
+    <link name="image_1">
+      <pose>1.925 2.000 0.001 0 0 0</pose>
       <inertial>
-        <mass>51.33</mass>
+        <mass>55.35</mass>
         <inertia>
-          <ixx>146.3872</ixx> <ixy>0.0</ixy> <ixz>0.0</ixz>
-          <iyy>146.3872</iyy> <iyz>0.0</iyz>
-          <izz>292.7735</izz>
+          <ixx>166.0505</ixx>
+          <ixy>0.0</ixy>
+          <ixz>0.0</ixz>
+          <iyy>174.4567</iyy>
+          <iyz>0.0</iyz>
+          <izz>340.5063</izz>
         </inertia>
       </inertial>
-      <collision name='image_1_Col'>
-        <geometry><box><size>5.850 5.850 0.01</size></box></geometry>
+      <collision name="image_1_Col">
+        <geometry>
+          <box>
+            <size>6.150 6.000 0.01</size>
+          </box>
+        </geometry>
         <surface>
-          <friction><ode><mu>1.0</mu><mu2>1.0</mu2></ode></friction>
-          <contact><ode><kp>10000000.0</kp><kd>1.0</kd></ode></contact>
+          <friction>
+            <ode>
+              <mu>1.0</mu>
+              <mu2>1.0</mu2>
+            </ode>
+          </friction>
+          <contact>
+            <ode>
+              <kp>10000000.0</kp>
+              <kd>1.0</kd>
+            </ode>
+          </contact>
         </surface>
       </collision>
-      <visual name='image_1_Vis'>
-        <geometry><box><size>5.850 5.850 0.01</size></box></geometry>
-        <material><script><uri>model://test_room_v3/materials/scripts</uri>
-                <uri>model://test_room_v3/materials/textures/</uri>
-                <name>image_1_Mat</name></script></material>
+      <visual name="image_1_Vis">
+        <geometry>
+          <box>
+            <size>6.150 6.000 0.01</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <uri>model://test_room_v2/materials/scripts</uri>
+            <uri>model://test_room_v2/materials/textures/</uri>
+            <name>image_1_Mat</name>
+          </script>
+        </material>
       </visual>
     </link>
-
-    <link name='image_2'>
-      <pose>1.850 -2.925 0.001 0 0 0</pose>
-      <inertial>
-        <mass>34.65</mass>
-        <inertia>
-          <ixx>42.8003</ixx> <ixy>0.0</ixy> <ixz>0.0</ixz>
-          <iyy>103.9503</iyy> <iyz>0.0</iyz>
-          <izz>146.75</izz>
-        </inertia>
-      </inertial>
-      <collision name='image_2_Col'>
-        <geometry><box><size>6.000 3.850 0.01</size></box></geometry>
-        <surface>
-          <friction><ode><mu>1.0</mu><mu2>1.0</mu2></ode></friction>
-          <contact><ode><kp>10000000.0</kp><kd>1.0</kd></ode></contact>
-        </surface>
-      </collision>
-      <visual name='image_2_Vis'>
-        <geometry><box><size>6.000 3.850 0.01</size></box></geometry>
-        <material><script><uri>model://test_room_v3/materials/scripts</uri>
-                <uri>model://test_room_v3/materials/textures/</uri>
-                <name>image_2_Mat</name></script></material>
-      </visual>
-    </link>
-
-    <link name='image_3'>
+    <link name="image_2">
       <pose>-3.000 0.000 0.001 0 0 0</pose>
       <inertial>
         <mass>53.83</mass>
         <inertia>
-          <ixx>422.0725</ixx> <ixy>0.0</ixy> <ixz>0.0</ixz>
-          <iyy>61.4115</iyy> <iyz>0.0</iyz>
+          <ixx>422.0725</ixx>
+          <ixy>0.0</ixy>
+          <ixz>0.0</ixz>
+          <iyy>61.4115</iyy>
+          <iyz>0.0</iyz>
           <izz>483.4831</izz>
         </inertia>
       </inertial>
-      <collision name='image_3_Col'>
-        <geometry><box><size>3.700 9.700 0.01</size></box></geometry>
+      <collision name="image_2_Col">
+        <geometry>
+          <box>
+            <size>3.700 9.700 0.01</size>
+          </box>
+        </geometry>
         <surface>
-          <friction><ode><mu>1.0</mu><mu2>1.0</mu2></ode></friction>
-          <contact><ode><kp>10000000.0</kp><kd>1.0</kd></ode></contact>
+          <friction>
+            <ode>
+              <mu>1.0</mu>
+              <mu2>1.0</mu2>
+            </ode>
+          </friction>
+          <contact>
+            <ode>
+              <kp>10000000.0</kp>
+              <kd>1.0</kd>
+            </ode>
+          </contact>
         </surface>
       </collision>
-      <visual name='image_3_Vis'>
-        <geometry><box><size>3.700 9.700 0.01</size></box></geometry>
-        <material><script><uri>model://test_room_v3/materials/scripts</uri>
-                <uri>model://test_room_v3/materials/textures/</uri>
-                <name>image_3_Mat</name></script></material>
+      <visual name="image_2_Vis">
+        <geometry>
+          <box>
+            <size>3.700 9.700 0.01</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <uri>model://test_room_v2/materials/scripts</uri>
+            <uri>model://test_room_v2/materials/textures/</uri>
+            <name>image_2_Mat</name>
+          </script>
+        </material>
       </visual>
     </link>
-
-</model>
+    <link name="image_3">
+      <pose>1.850 -2.925 0.001 0 0 0</pose>
+      <inertial>
+        <mass>34.65</mass>
+        <inertia>
+          <ixx>42.8003</ixx>
+          <ixy>0.0</ixy>
+          <ixz>0.0</ixz>
+          <iyy>103.9503</iyy>
+          <iyz>0.0</iyz>
+          <izz>146.75</izz>
+        </inertia>
+      </inertial>
+      <collision name="image_3_Col">
+        <geometry>
+          <box>
+            <size>6.000 3.850 0.01</size>
+          </box>
+        </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu>1.0</mu>
+              <mu2>1.0</mu2>
+            </ode>
+          </friction>
+          <contact>
+            <ode>
+              <kp>10000000.0</kp>
+              <kd>1.0</kd>
+            </ode>
+          </contact>
+        </surface>
+      </collision>
+      <visual name="image_3_Vis">
+        <geometry>
+          <box>
+            <size>6.000 3.850 0.01</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <uri>model://test_room_v2/materials/scripts</uri>
+            <uri>model://test_room_v2/materials/textures/</uri>
+            <name>image_3_Mat</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+  </model>
 </sdf>

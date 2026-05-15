@@ -1,19 +1,6 @@
 import os
 import math
 
-# def parse_wall_data(link):
-#     """SDF link 엘리먼트에서 벽 데이터를 추출합니다."""
-#     try:
-#         p = list(map(float, link.find('pose').text.split()))
-#         s = list(map(float, link.find('.//box/size').text.split()))
-#         if s[2] < 0.5: return None
-
-#         yaw = abs(math.degrees(p[5])) % 180
-#         w, h = (s[1], s[0]) if 80 < yaw < 100 else (s[0], s[1])
-#         return {'px': p[0], 'py': p[1], 'w': w, 'h': h}
-#     except:
-#         return None
-
 def parse_wall_data(link):
     """SDF link 엘리먼트에서 벽 데이터를 추출하고 반시계 방향으로 90도 회전합니다."""
     try:
@@ -26,14 +13,6 @@ def parse_wall_data(link):
         yaw = abs(math.degrees(p[5])) % 180
         w, h = (s[1], s[0]) if 80 < yaw < 100 else (s[0], s[1])
 
-        # # 💡 [추가] 반시계 방향(CCW) 90도 회전 적용 로직
-        # rotated_px = -p[1]
-        # rotated_py = p[0]
-        # rotated_w = h
-        # rotated_h = w
-        # return {'px': rotated_px, 'py': rotated_py, 'w': rotated_w, 'h': rotated_h}
-
-        # 회전 없이 원본 좌표 그대로 사용
         return {'px': p[0], 'py': p[1], 'w': w, 'h': h}
 
     except Exception as e:
@@ -69,10 +48,7 @@ def create_material_script(scripts_path, mat_name, base_material_name):
 
       texture_unit
       {{
-        # 이미지 파일은 첨부하고 이름 변경한다!!!
-        # 회전 ➔ 자르기(여백 제거) ➔ 해상도 변경(Scale)"
-        # 레이어에 캔버스 맞추기(Fit Canvas to Layers)]
-        texture test.png
+        texture {base_material_name}
       }}
     }}
   }}

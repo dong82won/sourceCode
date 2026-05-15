@@ -22,6 +22,7 @@ class FloorEventsMixin:
     canvas: tk.Canvas
     material_var: tk.StringVar
 
+    # [최적화] 스냅 타겟 캐싱용 변수
     _cached_tx: list | None = None
     _cached_ty: list | None = None
 
@@ -29,24 +30,15 @@ class FloorEventsMixin:
     def get_cx_cy(self): 
         return self.canvas_w / 2 + self.pan_x, self.canvas_h / 2 + self.pan_y
 
-    # 💡 [핵심 변환] 반시계 방향 90도 회전을 화면 출력에 적용
     def gz_to_screen(self, gx, gy):
         cx, cy = self.get_cx_cy()
-        dx = gx - self.model_cx
-        dy = gy - self.model_cy
-        # X -> -Y, Y -> X (화면 좌표계 Y가 아래로 향하는 것을 고려한 변환)
-        return cx - dy * self.scale, cy - dx * self.scale
+        return cx + (gx - self.model_cx) * self.scale, cy - (gy - self.model_cy) * self.scale
 
-    # 💡 [핵심 역변환] 화면의 마우스 클릭 좌표를 가제보 원래 좌표로 복원
     def screen_to_gz(self, sx, sy):
         cx, cy = self.get_cx_cy()
-        dx_scr = sx - cx
-        dy_scr = sy - cy
-        # gz_to_screen의 역산
-        gx = self.model_cx - dy_scr / self.scale
-        gy = self.model_cy - dx_scr / self.scale
-        return gx, gy
+        return (sx - cx) / self.scale + self.model_cx, self.model_cy - (sy - cy) / self.scale
 
+    # [최적화] 캐시된 타겟이 있으면 반환하고, 없으면 계산 후 캐싱
     def get_snap_targets(self):
         if self._cached_tx is None or self._cached_ty is None:
             self._cached_tx = [w['px']-w['w']/2 for w in self.walls_data] + [w['px']+w['w']/2 for w in self.walls_data]
@@ -80,12 +72,14 @@ class FloorEventsMixin:
 
         sx1, sy1 = self.gz_to_screen(sx, sy)
         sx2, sy2 = self.gz_to_screen(cx, cy)
-
+        
         if self.rect_id is not None:
             self.canvas.coords(self.rect_id, sx1, sy1, sx2, sy2)
 
+    # 💡 [개선] 현재 사용 중인 번호들을 확인하고, 가장 작은 빈 번호를 찾아 반환
     def get_next_available_id(self, mat_type):
         is_custom = (mat_type == "Custom Image")
+        # 재질 종류에 따라(Custom Image vs 일반 바닥) 별도로 번호를 검사합니다.
         used_ids = {f[6] for f in self.confirmed_floors if len(f) > 6 and (f[5] == "Custom Image") == is_custom}
 
         new_id = 1
@@ -123,12 +117,13 @@ class FloorEventsMixin:
             if (r[2]-r[0]) > 0.2 and (r[3]-r[1]) > 0.2:
                 color = self.color_palette[self.color_index % len(self.color_palette)]
                 mat_type = self.material_var.get()
-
+                
+                # 💡 [수정] 빈 번호를 계산하고 리스트 튜플 마지막에 추가
                 new_id = self.get_next_available_id(mat_type)
                 self.confirmed_floors.append((r[0], r[1], r[2], r[3], color, mat_type, new_id))
                 added = True
 
-        if added:
+        if added: 
             self.color_index += 1
 
         if self.rect_id: self.canvas.delete(self.rect_id)
@@ -148,7 +143,7 @@ class FloorEventsMixin:
         else: self.scale *= 0.9
         self.draw_workspace()
 
-    def on_pan_start(self, event):
+    def on_pan_start(self, event): 
         self.last_pan_x, self.last_pan_y = event.x, event.y
 
     def on_pan_drag(self, event):
@@ -170,15 +165,14 @@ class FloorEventsMixin:
 
             gw = abs(f[2] - f[0])
             gh = abs(f[3] - f[1])
+            px_w = int(gw * 200)
+            px_h = int(gh * 200)
 
-            # 💡 [최적화] 화면이 반시계 방향으로 누웠으므로, 시각적인 폭(Width)은 gh이고 높이(Height)는 gw가 됩니다.
-            px_w_visual = int(gh * 200)
-            px_h_visual = int(gw * 200)
-
+            # 💡 [핵심] 리스트 순서에 의존하지 않고 고유 ID(f[6])를 참조
             f_id = f[6] if len(f) > 6 else "?"
 
             if f[5] == "Custom Image":
-                label_text = f"image_{f_id}\n[{px_w_visual} x {px_h_visual} px]"
+                label_text = f"image_{f_id}\n[{px_w} x {px_h} px]"
             else:
                 label_text = f"Floor_{f_id}"
 
@@ -186,6 +180,5 @@ class FloorEventsMixin:
 
         for w in self.walls_data:
             s = self.gz_to_screen(w['px'], w['py'])
-            # 💡 [최적화] 화면이 90도 회전했으므로, 벽을 그릴 때 스크린상의 가로폭은 w['h'], 세로폭은 w['w']를 따릅니다.
-            sw_scr, sh_scr = w['h']*self.scale, w['w']*self.scale
-            self.canvas.create_rectangle(s[0]-sw_scr/2, s[1]-sh_scr/2, s[0]+sw_scr/2, s[1]+sh_scr/2, fill="#777")
+            sw, sh = w['w']*self.scale, w['h']*self.scale
+            self.canvas.create_rectangle(s[0]-sw/2, s[1]-sh/2, s[0]+sw/2, s[1]+sh/2, fill="#777")
